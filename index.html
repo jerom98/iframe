@@ -1,0 +1,272 @@
+<script>
+	window.addEventListener("message", function (event) {
+		alert("Message received from the parent: " + event.data); // Message received from parent
+		// document.getElementById("myImage").src = event.data;
+	});
+
+	function setUrl() {
+		const url = window.location.href;
+		document.getElementById("url").innerHTML = url;
+	}
+
+	function setThemeColor() {
+		const searchParams = new URLSearchParams(window.location.search);
+		if (
+			searchParams.has("__bwDarkMode") &&
+			searchParams.get("__bwDarkMode") == "true"
+		) {
+			//dark theme
+			document.body.style.backgroundColor = "#03072a";
+		} else {
+			// light theme
+			document.body.style.backgroundColor = "#dedede";
+		}
+	}
+
+	window.onload = function () {
+		setUrl();
+		setThemeColor();
+	};
+
+	function getDeviceSpecificFunction(nativeFunction, webFunction) {
+		if (window.ReactNativeWebView != undefined) {
+			nativeFunction();
+		} else {
+			webFunction();
+		}
+	}
+
+	function reloadWidgetsWeb() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: ["REFRESH_WIDGET", { reloadDashboard: true }],
+			shouldCloseModal: true,
+		};
+		window.parent.postMessage(obj, "*");
+	}
+
+	function reloadWidgetsNative() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: ["REFRESH_WIDGET", { reloadDashboard: true }],
+			shouldCloseModal: true,
+		};
+		const stringifiedData = JSON.stringify(obj);
+		window.ReactNativeWebView.postMessage(stringifiedData);
+	}
+
+	function setFiltersWeb() {
+		const searchParams = new URLSearchParams(window.location.search);
+		const dashboardId = searchParams.get("__dashid");
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: [
+				"UPDATE_FILTERS",
+				{
+					filterUrl:
+						window.location.search.includes("Midwest") &&
+						window.location.search.replace("Midwest", "West"),
+					dashboardId: dashboardId,
+				},
+			],
+			shouldCloseModal: false,
+		};
+		window.parent.postMessage(obj, "*");
+	}
+
+	function setFiltersNative() {
+		const searchParams = new URLSearchParams(window.location.search);
+		if (searchParams.has("Region", "Midwest")) {
+			const filterArr = [];
+			for (let [key, value] of searchParams.entries()) {
+				if (key.startsWith("__")) continue;
+				if (key === "Region") {
+					value = value.replace("Midwest", "West");
+				}
+				filterArr.push({ filterName: key, value: value.split(",") });
+			}
+			const obj = {
+				type: "EVENT_VAN",
+				eventParams: [
+					"UPDATE_FILTERS",
+					{
+						filterArr,
+					},
+				],
+				shouldCloseModal: false,
+			};
+			const stringifiedData = JSON.stringify(obj);
+			window.ReactNativeWebView.postMessage(stringifiedData);
+		}
+		reloadWidgetsNative();
+	}
+
+	function navigateDashlinkWeb() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: [
+				"NAVIGATE_DASHLINK",
+				{
+					dashboardId: 19,
+					query: "Make=Ford&Model=F-150&Region=South&State=FL",
+				},
+			],
+			shouldCloseModal: true,
+		};
+		window.parent.postMessage(obj, "*");
+	}
+
+	function navigateDashlinkNative() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: [
+				"NAVIGATE_DASHLINK",
+				{
+					filterParams: [],
+					dashboardId: "19",
+					param: [
+						{
+							key: "test",
+							value: "Make=Ford&Model=F-150&Region=South&State=FL",
+							isFilterQuery: true,
+						},
+					],
+				},
+			],
+			shouldCloseModal: true,
+		};
+		const stringifiedData = JSON.stringify(obj);
+		window.ReactNativeWebView.postMessage(stringifiedData);
+	}
+
+	function breadcrumbBackWeb() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: [
+				"BREADCRUMB_BACK",
+				{
+					dashboardId: 17,
+				},
+			],
+			shouldCloseModal: true,
+		};
+		window.parent.postMessage(obj, "*");
+	}
+
+	function breadcrumbBackNative() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: [
+				"BREADCRUMB_BACK",
+				{
+					dashboardId: 17,
+				},
+			],
+			shouldCloseModal: true,
+		};
+		const stringifiedData = JSON.stringify(obj);
+		window.ReactNativeWebView.postMessage(stringifiedData);
+	}
+
+	function uploadFiles() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: ["UPLOAD_FILES", { uploadType: "gallery" }],
+		};
+		const stringifiedData = JSON.stringify(obj);
+		window.ReactNativeWebView.postMessage(stringifiedData);
+	}
+	function uploadFilesFromCamera() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: ["UPLOAD_FILES", { uploadType: "camera" }],
+		};
+		const stringifiedData = JSON.stringify(obj);
+		window.ReactNativeWebView.postMessage(stringifiedData);
+	}
+	function scanBarcode() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: ["SCAN_BARCODE"],
+		};
+		const stringifiedData = JSON.stringify(obj);
+		window.ReactNativeWebView.postMessage(stringifiedData);
+	}
+	function closePage() {
+		const obj = {
+			type: "EVENT_VAN",
+			eventParams: ["can_be_anything"],
+			shouldCloseModal: true,
+		};
+		const stringifiedData = JSON.stringify(obj);
+		window.ReactNativeWebView.postMessage(stringifiedData);
+	}
+</script>
+
+<style>
+	body {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+		align-items: center;
+		height: 100%;
+		overflow: hidden;
+		background-color: transparent;
+		color: maroon;
+		padding: 20px;
+	}
+	button {
+		font-size: 28px;
+		color: aliceblue;
+		padding: 12px;
+		background-color: rgb(72, 72, 255);
+	}
+	h2 {
+		padding: 20px;
+	}
+</style>
+
+<body>
+	<h3>iframe URL: <span id="url"></span></h3>
+	<button
+		onclick="closePage()"
+		style="
+			display: inline-block;
+			border-radius: 12px;
+			text-decoration: none;
+			border: none;
+			font-size: 16px;
+			margin-bottom: 12px;
+		"
+	>
+		Close modal
+	</button>
+	<div style="display: flex; flex-direction: column; gap: 12px">
+		<button onclick="uploadFiles()">Upload files</button>
+		<button onclick="uploadFilesFromCamera()">Upload files from camera</button>
+		<button onclick="scanBarcode()">Scan barcode</button>
+		<button
+			onclick="getDeviceSpecificFunction(reloadWidgetsNative,reloadWidgetsWeb)"
+		>
+			Reload Widgets
+		</button>
+		<button onclick="getDeviceSpecificFunction(setFiltersNative,setFiltersWeb)">
+			Replace Midwest Region filter with West Region
+		</button>
+		<button
+			onclick="getDeviceSpecificFunction(breadcrumbBackNative,breadcrumbBackWeb)"
+		>
+			Breadcrumb Back
+		</button>
+		<button
+			onclick="getDeviceSpecificFunction(navigateDashlinkNative,navigateDashlinkWeb)"
+		>
+			Navigate from Dashlink click
+		</button>
+		<div>
+			<label for="lname">File input:</label>
+			<input type="file" id="file" name="file" />
+		</div>
+	</div>
+	<script src="https://static.app/js/static.js" type="text/javascript"></script>
+</body>
