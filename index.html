@@ -25,6 +25,11 @@
         document.getElementById('url').innerHTML = url;
     }
 
+    function getDashboardId() {
+        const searchParams = new URLSearchParams(window.location.search);
+        return searchParams.get('__dashid');
+    }
+
     function setThemeColor() {
         const searchParams = new URLSearchParams(window.location.search);
         if (searchParams.has('__bwDarkMode') && searchParams.get('__bwDarkMode') == 'true') {
@@ -103,6 +108,7 @@
 
     function setFiltersNative() {
         const searchParams = new URLSearchParams(window.location.search);
+        const dashboardId = searchParams.get('__dashid');
         if (searchParams.has('Region', 'Midwest')) {
             const filterArr = [];
             for (let [key, value] of searchParams.entries()) {
@@ -121,6 +127,7 @@
                     },
                 ],
                 shouldCloseModal: false,
+                parentDashboardId: dashboardId,
             };
             const stringifiedData = JSON.stringify(obj);
             window.ReactNativeWebView.postMessage(stringifiedData);
@@ -144,6 +151,7 @@
     }
 
     function navigateDashlinkNative() {
+        const dashboardId = getDashboardId();
         const obj = {
             type: 'EVENT_VAN',
             eventParams: [
@@ -161,6 +169,7 @@
                 },
             ],
             shouldCloseModal: true,
+            parentDashboardId: dashboardId,
         };
         const stringifiedData = JSON.stringify(obj);
         window.ReactNativeWebView.postMessage(stringifiedData);
@@ -181,6 +190,7 @@
     }
 
     function breadcrumbBackNative() {
+        const dashboardId = getDashboardId();
         const obj = {
             type: 'EVENT_VAN',
             eventParams: [
@@ -190,6 +200,7 @@
                 },
             ],
             shouldCloseModal: true,
+            parentDashboardId: dashboardId,
         };
         const stringifiedData = JSON.stringify(obj);
         window.ReactNativeWebView.postMessage(stringifiedData);
@@ -209,34 +220,46 @@
         };
         // all the available options https://www.npmjs.com/package/react-native-image-picker#options
 
+        const dashboardId = getDashboardId();
+
         const obj = {
             type: 'EVENT_VAN',
             eventParams: ['UPLOAD_FILES', options],
+            parentDashboardId: dashboardId,
         };
         const stringifiedData = JSON.stringify(obj);
         window.ReactNativeWebView.postMessage(stringifiedData);
     }
     function uploadFilesFromCameraNative() {
+        const dashboardId = getDashboardId();
+
         const obj = {
             type: 'EVENT_VAN',
             eventParams: ['UPLOAD_FILES', { uploadType: 'camera' }],
+            parentDashboardId: dashboardId,
         };
         const stringifiedData = JSON.stringify(obj);
         window.ReactNativeWebView.postMessage(stringifiedData);
     }
     function scanBarcodeNative() {
+        const dashboardId = getDashboardId();
+
         const obj = {
             type: 'EVENT_VAN',
             eventParams: ['SCAN_BARCODE'],
+            parentDashboardId: dashboardId,
         };
         const stringifiedData = JSON.stringify(obj);
         window.ReactNativeWebView.postMessage(stringifiedData);
     }
     function closeModalNative() {
+        const dashboardId = getDashboardId();
+
         const obj = {
             type: 'EVENT_VAN',
             eventParams: ['anything'],
             shouldCloseModal: true,
+            parentDashboardId: dashboardId,
         };
         const stringifiedData = JSON.stringify(obj);
         window.ReactNativeWebView.postMessage(stringifiedData);
