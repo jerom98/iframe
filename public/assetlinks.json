@@ -1,0 +1,12 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.brainweber.orthopop_testing",
+            "sha256_cert_fingerprints": [
+                "C2:9A:5C:21:19:CD:A6:EE:56:D5:44:3D:A6:4C:4F:FF:EF:EA:C1:3A:9B:31:EB:A9:EA:CB:89:AF:A0:B7:0B:A5"
+            ]
+        }
+    }
+]
